@@ -1,0 +1,99 @@
+Akshay Bhat
+23/5/2015
+CS 35l - Assignment 8
+
+
+In order to test the performance of the two implementations,
+I created text files with 200 words, 5000 words and 20000 words.
+I used the following commands to test each of srot13 and srot13u with
+each the different files:
+
+time ./srot13 <200words
+real 0m0.002s
+user 0m0.001s
+sys  0m0.000s
+
+time ./srot13u <200words
+real 0m0.005s
+user 0m0.000s
+sys  0m0.003s
+
+time ./srot13 <500words
+real 0m0.004s
+user 0m0.000s
+sys  0m0.002s
+
+time ./srot13u <500words
+real 0m0.008s
+user 0m0.002s
+sys  0m0.006s
+
+time ./srot13 <5000words
+real 0m0.005s
+user 0m0.003s
+sys  0m0.000s
+
+time ./srot13u <5000words
+real 0m0.053s
+user 0m0.001s
+sys  0m0.050s
+
+time ./srot13 <20000words
+real 0m0.009s
+user 0m0.005s
+sys  0m0.002s
+
+time ./srot13u <20000words
+real 0m0.150s
+user 0m0.007s
+sys  0m0.141s
+
+srot13u takes considerably more time than srot13 (with a larger upward trend),
+and as we have seen, this is because of the excessive system calls by using
+read() and write() with unbuffered I/O.
+
+=====================================================================
+
+For each of the above comparions with srot13u, the following results were produced:
+
+Comparisons based on number of words (one word per line):
+
+50    words = 229 comparisons
+200   words = 1321 comparisons
+500   words = 3931 comparisons
+20000 words = 265164 comparisons
+
+As we can see based on the results, there are N*logn comparisons per word.
+The complexity of the sort is O(Nlog(N)).
+
+
+=====================================================================
+
+In order to test the performance of srot13s, I ran the same time commands
+as part 1, but using the srot13s shell script, as follows:
+
+time ./srot13s < 200words
+real	0m0.005s
+user	0m0.000s
+sys	0m0.003s
+
+time ./srot13s < 500words
+real	0m0.011s
+user	0m0.000s
+sys	0m0.004s
+
+time ./srot13s < 5000words
+real	0m0.034s
+user	0m0.026s
+sys	0m0.008s
+
+time ./srot13s <20000words
+real	0m0.119s
+user	0m0.085s
+sys	0m0.036s
+
+
+For 3 of the 4 test cases, we see that srot13s is faster than srot13u, but not
+faster than srot13. srot13s is faster than srot13u because it uses buffered I/O
+and thus far fewer system calls. However, it needs to pipe output twice,
+which makes it much slower than srot13.

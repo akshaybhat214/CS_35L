@@ -1,0 +1,137 @@
+Akshay Bhat
+4/14/2015
+Lab 3 Log
+
+Laboratory Section:
+
+1.
+In order to download and extract the directory I used:
+
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+and then
+tar xvf coreutils-7.6.tar.gz
+
+These commands downloaded and unzipped the coreutils folder.
+
+2.
+After extraction, navigated into the coreutils7.6 directory and typed
+the following command, which created makeFile for the specfied
+directory, and then installed coreUtils 7.6 in the directory
+of my choice:
+
+$ ./configure --prefix=/u/eng/class/classabh/coreutilsInstall/
+$ make
+$ make install
+
+Initially, I made the mistake of using the --prefix flag for make
+install, and it gave me an error. The flag is only required for
+configure.
+
+3.
+In order to reproduce the bug on my machine,
+I navigated to the bin folder within the coreUtils directory,
+and executed the following command:
+
+$ ./ls -l
+As expected, the date was shown in the incorrect format,
+since the default locale on the SEASnet server is en_US.UTF-8.
+
+4.
+I used the command $ patch -p1 < patchfile.diff to apply the
+patch to ls.c. However, there was an error with one of the Hunks,
+so I had to open ls.c with emacs and manually make the changes
+in lines 2030 to 2037.
+
+5.
+After going to the directory coreutils-7.6 and typing the command:
+$ make
+
+The following output was then produced:
+
+make  all-recursive
+make[1]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6'
+Making all in lib
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+make  all-recursive
+make[3]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+make[4]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+make[4]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+make[3]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/lib'
+Making all in src
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/src'
+make  all-am
+make[3]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/src'
+  	 CC     ls.o
+    	 CCLD   dir
+      	 CCLD   vdir
+         CCLD   ls
+make[3]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/src'
+make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/src'
+	 Making all in doc
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/doc'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/doc'
+	Making all in man
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/man'
+      	 GEN    dir.1
+      	 GEN    vdir.1
+      	 GEN    ls.1
+ make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/man'
+ Making all in po
+ make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/po'
+ make[2]: Nothing to be done for 'all'.
+ make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/po'
+ Making all in tests
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/tests'
+ make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/tests'
+ Making all in gnulib-tests
+make[2]:
+Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+ make  all-recursive
+make[3]:
+Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+make[4]:
+Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+make[4]: Nothing to be done for 'all-am'.
+make[4]:
+Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+make[3]:
+Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+make[2]:
+Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6/gnulib-tests'
+make[2]: Entering directory '/w/home.05/class/classabh/lab3/coreutils-7.6'
+make[2]: Nothing to be done for 'all-am'.
+ make[2]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6'
+ make[1]: Leaving directory '/w/home.05/class/classabh/lab3/coreutils-7.6'
+	      
+For most directories, no changes were required since they were not
+affected by modifications to ls.c. However, we see that for certain files
+like ls.l vdir.l and dir.l were generated because these files
+had to be recompiled due to the changes in ls.c
+Similarly, ls.o ls vdir and dir were all files that had to be regenerated
+to compile coreutils-7.6 and apply the changes. ls.o is the object code
+file which is modified by the linker, whereas ls is the actual executable
+which is obviously modified in order to fix the bug.
+
+6.
+Returning the coreutils-7.6/src and typing the command:
+$ ./ls -l
+We can see that the changes were applied successfully.
+The date is now represented in the correct format.
+
+In order to test this with an old file, I typed the following command
+in the coreutils-7.6/src directory:
+
+$ touch –t 201301210959.30 test_file followed by '$ ./ls -l'.
+
+The patch still worked on the file even though it was more than a
+year old. However, it did not display the time in the third field,
+instead it displayed the year.
+
+Navigating into coreutilsInstall/bin (the folder in which I
+installed coreutils-7.6), I repeated the above process
+(in order to use the previously intalled version of ls),and
+the command would print out the files (including the new one) in
+the incorrect format.

@@ -1,0 +1,127 @@
+Akshay Bhat
+4/24/2015
+Laboratory 4
+
+1. I used the following command to make a clone of
+the diffutils repository:
+$git clone git://git.savannah.gnu.org/diffutils.git
+
+2. In order to pipe the log of the repository into the text file,
+I first navigated into the Diffutils directory and then used
+the following command to store it in the directory above:
+
+$git log >../git-log.txt 
+
+3. Similarly, to store the list of tags of the repository, I used
+the following command:
+
+$git tag >../git-tags.txt
+
+4. First I found the corresponding patch using the following
+sequence of commands:
+
+$git log
+/like this
+
+After saving the patch hash, I did the following to save the
+patch to the text file:
+git show 1fa6140faacb29e44f2d666c74529ed27b0abb5a >../quote-patch.txt
+
+5.To checkout version 3.0, I used the command:
+$ git checkout tags/v3.0
+
+The shell outputted several lines notifying me that I was in 'detached
+HEAD' state, and how to commit changes.
+
+6. In order to apply the patch, I had to use:
+patch -p1<../quote-patch.txt
+
+It worked for most hunks, and for the other  hunks, it saved the changes
+in .rej files. Several files got skipped, and hunks were not applied.
+These would need to be applied manually later.
+
+7. When I typed git status:
+
+It outputted the names of the dozens of modified files, under the
+heading 'Changes not staged for commit'. Most of these were .c files,
+and the rest were various types (which needed changes reverted).
+Under the heading 'Untracked files' were another dozen or so
+files. These did not require any modification.
+
+8,9.
+For each of the files in the 'Changes not staged for commit' section,
+manually inspected and removed comments in emacs using the following:
+ C-x v = C-x v u
+This first checked the differences, and proceeded to revert changes.
+
+For the .c files, I had to inspect them individually, and check each
+hunk to ensure that it wasn't a change for C-character strings. If
+it wasn't C-u C-c C-a (in Emacs)would undo the change made by the
+hunk. The only changes undone were invariably comments.
+
+					       
+10.
+There were two files found by using $find src/*.c.rej
+src/diff.c.rej
+src/diff3.c.rej
+
+Using the command C-c C-c in Emacs, I went to the original source
+file and manually made each of the changes. These are the hunks that
+were rejected in part 7 of the assignment.
+There were 4 lines of changes required in diff.c and 1 line in diff3.c
+
+11.
+In order to clean up the repository, I executed the following command:
+$ git clean -f
+
+This removed all untracked files, which were 20 files in total.
+
+12.
+At this point,$ git status should only output 6 files:
+modified:   src/cmp.c
+modified:   src/diff.c
+modified:   src/diff3.c
+modified:   src/dir.c
+modified:   src/sdiff.c
+modified:   src/util.c
+
+Using the command git diff>../quote-3.0-patch.txt I put the patch into
+a text file.
+
+13.
+In order to build the patched version of Diffutils, I entered the
+following commands(As instructed in the README-hacking file):
+$ ./bootstrap
+$ ./configure
+$ make
+$ make check
+
+To test that it worked correctly:
+- cd into src
+- diff . -	//Should output cannot compare with directory
+- diff --help 	//Should have ' and not `
+
+14.
+In order to carry out the sanity test:
+- cd into gitroot
+- mkdir diffutils-3.0
+- mkdir diffutils-3.0-patch
+- cd diffutils/src
+- cp *.c ../../diffutils-3.0
+Checkout v3.0 (unmodified)
+- cd diffutils/src
+- cp *.c ../../diffutils-3.0-patch
+- cd ../../
+- diffutils/src/diff -pru diffutils-3.0 diffutils-3.0-patch >quote-3.0-test.txt
+
+The file quote-3.0-test.txt will now contain a diff of the patched and
+unpatched copies of v3.0 of diffutils.
+
+15.
+After the folowing command:
+diff quote-3.0-test.txt quote-3.0-patch.txt
+
+A diff file was outputted showing the differences, and the main differences
+were the reversions to the character string constants.
+These changes are not innocuous because they completely change the string
+literals.

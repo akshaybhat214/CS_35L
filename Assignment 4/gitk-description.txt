@@ -1,0 +1,17 @@
+Akshay Bhat
+4/25/2015
+CS 35L HW4- gitk description
+
+The gitk interface has multiple windows.
+
+-The top left panel shows the history of commits,
+with linked circles. A slanted branch between
+the circles indicates that there has been a merge.
+The other top panels have the names of the author
+of each commit, as well as the date.
+
+-The bottom left-hand-side file panel the diff
+files for the corresponding commit selected.
+
+-The bottom right-hand-side panel indicates which files
+were modified in that particular commit.

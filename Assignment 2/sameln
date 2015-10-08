@@ -1,0 +1,61 @@
+#!/bin/bash
+#Property of AKSHAY BHAT (CS 35L LAB 5)
+
+dir=$1
+RESULT=`ls -a $dir`
+
+#ensure that sorting is by C locale.
+export LC_ALL='C'
+
+#array will contain only regular files by end of loop.
+declare -a ARRAY
+let count=0
+
+for FILE in $RESULT
+do
+
+    if [ ! -L "$dir/$FILE" ]
+    then
+	if [ -f "$dir/$FILE" ] #checks if regular file
+	then
+	    if [ ! -r "$dir/$FILE" ] #checks if user can read file
+	    then
+		echo "Did not have permission to access."
+		continue
+	    fi
+	      echo "$dir/$FILE is a regular file."
+	      ARRAY[$count]="$dir/$FILE"
+	      let count=count+1
+	  else
+	      echo "$dir/$file is NOT regular file."
+	fi
+    fi
+done
+
+echo "There are $count regular files."
+let arrSize=${#ARRAY[@]} 
+
+for ((i=0; i<$arrSize-1; i++ ))
+do
+
+    #echo "${ARRAY[$i]}"    
+    for ((j=i+1; j<$arrSize; j++ ))
+    do
+	if  cmp -s ${ARRAY[i]} ${ARRAY[j]} #if this returns 0, they are same. 
+	then
+	    #echo "${ARRAY[i]} is same as ${ARRAY[j]}"
+	    # echo "deleting ${ARRAY[j]} at array pos $j"
+	    ln -f ${ARRAY[i]} ${ARRAY[j]} #creates hard link and deletes second file.
+	    for ((k=$j ; k<$arrSize-1; k++ ))
+	    do
+		let f=$k+1
+	         ARRAY[k]="${ARRAY[f]}" #shifts array to remove deleted file.
+	    done
+	    let j=$j-1
+	    let arrSize=$arrSize-1
+	    
+	fi
+	
+    done
+    
+done

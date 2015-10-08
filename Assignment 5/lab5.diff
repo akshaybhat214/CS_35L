@@ -1,0 +1,24 @@
+2015-04-30  Akshay Bhat  <classabh@lnxsrv01.seas.ucla.edu>
+
+	* oldTimeSpec.h (timespec_cmp):
+	Changed the the type used by diff from int to long.
+	Also returned based on sign of diff.
+
+--- coreutils-with-bug/lib/timespec.h	2005-09-21 23:05:39.000000000 -0700
++++ coreutils-fixed/lib/timespec.h	2015-04-30 17:32:29.718827000 -0700
+@@ -45,8 +45,13 @@
+ static inline int
+ timespec_cmp (struct timespec a, struct timespec b)
+ {
+-  int diff = a.tv_sec - b.tv_sec;
+-  return diff ? diff : a.tv_nsec - b.tv_nsec;
++  long diff = (long)a.tv_sec - (long)b.tv_sec;
++  if (diff==0)
++    return 0;
++  if (diff<0)
++    return -1;
++  else
++    return 1;
+ }
+ 
+ # if ! HAVE_DECL_NANOSLEEP

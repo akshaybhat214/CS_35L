@@ -1,0 +1,171 @@
+Akshay Bhat
+5/20/2015
+Assignment 8 lab log
+
+
+1.
+I created two c source files tr2u.c and tr2b.c for the two
+different implementations of tr.
+I compiled them as follows:
+
+$ gcc -0 tr2u tr2u.c
+$ gcc -0 tr2b tr2b.c
+
+I did some simple tests, and ensured that both versions handled errors correctly:
+
+$ ./tr2u 'aa' 'cd' < test.txt //repeated input bytes error
+$ ./tr2u 'ab' 'aa' < test.txt //Ensure no infinite loop replacing same character
+$ ./tr2u 'ab' 'cd' < test.txt //Check if it replaced characters correctly.
+
+The only difference between tr2u and tr2b is that the former uses getchar() and
+putchar() (buffered I/O) whereas the latter uses read() and write() (unbuffered I/O).
+
+
+
+2.
+In order to create a random file with 5 million bytes of alphanumeric
+data:
+
+$ < /dev/urandom tr -dc "[:alnum:]" | head -c5000000 > big.txt
+
+# verify that size is more than 5000000 bytes.
+$ ls -ial 
+
+
+
+
+3.
+Using strace to compare system calls of the two variants while copying
+to another file and while copying to the terminal:
+
+a)
+$ strace -c ./tr2b 'abc' 'xyz' < big.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+81.60   0.000408           0      4884           write
+15.60   0.000078           1        79           read
+2.80    0.000014           5         3           brk
+0.00    0.000000           0         2           open
+0.00    0.000000           0         2           close
+0.00    0.000000           0         4           fstat
+0.00    0.000000           0        11           mmap
+0.00    0.000000           0         3           mprotect
+0.00    0.000000           0         1           munmap
+0.00    0.000000           0         1         1 access
+0.00    0.000000           0         5           mremap
+0.00    0.000000           0         1           execve
+0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000500                  4997         1 total
+			
+
+
+b)
+$ strace -c ./tr2b 'abc' 'xyz' < big.txt > tempFile.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+-nan    0.000000           0        79           read
+-nan    0.000000           0        77           write
+-nan    0.000000           0         2           open
+-nan    0.000000           0         2           close
+-nan    0.000000           0         4           fstat
+-nan    0.000000           0        11           mmap
+-nan    0.000000           0         3           mprotect
+-nan    0.000000           0         1           munmap
+-nan    0.000000           0         3           brk
+-nan    0.000000           0         1         1 access
+-nan    0.000000           0         5           mremap
+-nan    0.000000           0         1           execve
+-nan    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000000                   190         1 total
+			  
+c)
+$ strace -c ./tr2u 'abc' 'xyz' < big.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+63.92    0.392403           0   5000005         1 write
+36.08    0.221531           0   5000006           read
+0.00    0.000000           0         2           open
+0.00    0.000000           0         2           close
+0.00    0.000000           0         2           fstat
+0.00    0.000000           0         9           mmap
+0.00    0.000000           0         3           mprotect
+0.00    0.000000           0         1           munmap
+0.00    0.000000           0         3           brk
+0.00    0.000000           0         1         1 access
+0.00    0.000000           0         5           mremap
+0.00    0.000000           0         1           execve
+0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.613934              10000041         2 total
+			
+d)
+$ strace -c ./tr2u 'abc' 'xyz' < big.txt > tempFile.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+74.87    0.163813           0   5000004           write
+25.13    0.054995           0   5000006           read
+0.00    0.000000           0         2           open
+0.00    0.000000           0         2           close
+0.00    0.000000           0         2           fstat
+0.00    0.000000           0         9           mmap
+0.00    0.000000           0         3           mprotect
+0.00    0.000000           0         1           munmap
+0.00    0.000000           0         3           brk
+0.00    0.000000           0         1         1 access
+0.00    0.000000           0         5           mremap
+0.00    0.000000           0         1           execve
+0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.218808              10000040         1 total
+			
+
+As we can see, the tr2b variant produces far fewer system calls that tr2u does
+because tr2b uses buffered I/O, and needs to call the putchar() and getchar()
+functions only a few times, depending on how often the buffer is full.
+Tr2b, on the other hand, produces a system call for write() and read()
+every single time that a character was inputted or outputted.
+
+
+============================================================================
+
+4.
+Next, I timed each of the previous 4 commands, and compared the two variants
+using the following commands:
+
+
+$  time ./tr2b 'abc' 'xyz' < big.txt
+real    0m2.098s
+user    0m0.270s
+sys     0m0.024s
+
+
+$ time ./tr2b 'abc' 'xyz' < big.txt > tempFile.txt
+real    0m0.239s
+user    0m0.169s
+sys     0m0.011s
+
+
+$ time ./tr2u 'abc' 'xyz' < big.txt
+real    0m6.235s
+user    0m0.313s
+sys     0m5.916s
+
+
+$ time ./tr2u 'abc' 'xyz' < big.txt > tempFile.txt
+real    0m4.736s
+user    0m0.285s
+sys     0m4.391s
+
+
+Based on the results of part 3, it comes as no surpises that tr2b is much
+faster than tr2u, both while copying to the terminal, and to another file.
+Because it reads and writes to the buffer until the buffer is full, and uses
+a system call for the whole block of bytes, it spends far less time with
+system calls. Unbuffered I/0 in tr2u is slower because every byte has to be
+written to the kernel individually.

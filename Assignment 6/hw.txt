@@ -1,0 +1,40 @@
+Akshay Bhat
+5/7/2015
+Homework 6 (CS 35L Lab 5)
+
+1.
+The network would still be secure because the bytes are
+encrypted, and hence useless without the private key.
+
+a)
+If other teams had access to my keystrokes, the data would
+not be secure because they would know the usernames and
+passwords necessary to obtain the private key and decode
+the messages.
+However, this could be prevented by using an ssh-agent,
+which SSH directly communicates with in order to check for
+the passwords. This way, even by monitoring the keystrokes,
+it would not be possible to obtain the password for the
+private key.
+
+b)
+If we were booting off a USB drive, it would be significantly
+easier for the other teams to access the decrypted data,
+since they would now have access to the private key, and
+could easily decrypt any messages being sent to me.
+
+=======================================================
+
+2.
+The gpg --verify command only verfies that the same public
+key was used to sign the document, so it is
+possible for someone to sign a document as another person.
+The command can verify that the document was not tampered with,
+but it has no way of ensuring that the person who signed the
+document in the first place is actually who they say they are.
+
+The solution to this problem is to rely on companies like
+VeriSign, which we trust to verify the identity of the sender,
+by comparing the public key of the sender against their comprehensive
+database of public-key holders. This way, we can ensure that someone
+who sent a message is actually a holder of that particular public key. 

@@ -1,0 +1,67 @@
+Akshay Bhat
+5/12/2015
+CS 35L - Lab 7 (Multithreaded performance)
+
+1.
+First, I checked my path and verified that I was using
+the correct version of Coreutils sort with the command:
+
+$sort --version
+
+2.
+In order to create a textfile with 10 million floating point
+numbers, I used the dollowing sequence of commands:
+
+#Creates 10 millio floating point numbers, restricting 1 number
+#per line (4 bytes), and storing in a specified file.
+$od -f -w4 --read-bytes=40M /dev/urandom > randomNums.txt
+
+#In order to remove the leading spaces, and address from every line.
+$ sed 's/[^ ]* //' randomNums.txt > random4.txt
+
+#Remove any other spaces in the file:
+sed 's/ //' random4.txt > randFinal.txt
+
+#Check that previous commands worked (no spaces):
+od -c randFinal.txt
+
+
+3.
+Results of the sorting commands with different numbers of threads
+in parallel:
+
+#For the single-thread run, I tried it in both parallel-mode, and
+#default mode. The default mode run was considerably faster, possibly
+#due to optimizations.
+$ time -p sort -g randFinal.txt > /dev/null
+real 24.88
+user 121.66
+sys 0.47
+
+$ time -p sort -g --parallel=1 randFinal.txt > /dev/null
+real 106.94
+user 106.77
+sys 0.17
+
+$ time -p sort -g --parallel=2 randFinal.txt > /dev/null
+real 62.00
+user 117.21
+sys 0.24
+
+$ time -p sort -g --parallel=4 randFinal.txt > /dev/null
+real 46.87
+user 154.68
+sys 0.36
+
+$ time -p sort -g --parallel=8 randFinal.txt > /dev/null
+real 28.44
+user 154.80
+sys 0.74
+
+
+As we can see, excluding the optimized default output (the first run
+displayed above), the real time is decreasing as we increase the number
+of threads, whereas the user time amd system time are increasing
+(by a much smaller magnitude) with the number of threads. The different
+threads are sorting different segments of the file in parallel.
+Overall, the sort is faster with more threads, as expected.

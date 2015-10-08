@@ -1,0 +1,80 @@
+Akshay Bhat
+4/25/2015
+Homework 4
+
+Partner's name: Panos Karagiannis (Lab 5)
+
+2.
+$git checkout v3.0 -b quote
+This command created a new branch called 'quote',
+after first checking out version 3.0 of Diffutils.
+
+3.
+Applied patch with:
+$ patch -p1 < quote-3.0-patch.txt
+
+As expected, only 6 .c files were modified.
+No manual changes were required.
+
+4,5.
+Opened log file with:
+$ emacs ChangeLog
+Used emacs command 'C-x 4-a' to create log entry, filled
+in the changes to 6 .c files.
+
+6.
+#add modified files to index.
+$ git add .
+
+#commit changes to quote branch using ChangeLog as commit message.
+$ git commit -F ChangeLog
+#check that log entry was correctly added.
+$ git log
+
+7.
+Created formatted patch file using following:
+$  git format-patch -1 0eec33c241616c6061c1f999fde37c558af81767
+
+#change name of formatted patch 
+$ mv  0001-2015-04-25-Akshay-Bhat-classabh-lnxsrv01.seas.ucla.e.patch
+../../formatted-patch.txt
+
+#formatted-patch.txt now contains the patch as well as the log
+entry with my details amended on the top.
+
+8.
+#Create new branch and checkout original version 3.0 of Diffutils
+$ git checkout master
+$ git checkout -b partner v3.0
+
+#install partners patch
+$ git am ../partner-patch.txt
+
+#check log to make sure changes were automatically committed.
+$ git log
+
+#check that patch works
+./bootstrap
+./configure
+make
+make check
+
+#The above steps produced the same output as when I ran my own patch.
+
+9.
+After runing the command:
+$ make distdir
+
+#I inspected the ChangeLog file in the newly created diffutils-3.0.1-a3be
+#directory and found that all the commits, were added, including the
+#latest one by my partner.
+$ cd diffutils-3.0.1-a3be
+$emacs ChangeLog
+
+10.
+#Connected to the SEASnet remote server and opened lnxsrv. 
+ $cd ~eggert/src/gnu/emacs
+ $gitk
+
+#the gitk window opens up and I scroll to the corresponding merge on
+2015-1-23 by Stefan Monnier.

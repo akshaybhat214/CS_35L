@@ -1,0 +1,71 @@
+Akshay Bhat
+4/9/2015
+
+Laboratory Section:
+
+-The first command outputs individual words on each line,
+followed by different numbers of new lines depending on
+how many non-alphabetic characters there are.
+-The second command outputs the same as the first command,
+but without the new lines(i.e it removes repeated characters).
+-The third command sorts the results from the second command.
+-The fourth command takes the results of the previous command
+and eliminates repeats.
+-The fifth command takes the results of the previous command and
+compares them with those in the file 'words', producing columns
+indicating which words exist in each file.
+-The sixth and final command only ouputs words unique to the first
+file.
+
+The following is the script I wrote the extract the hawaiian words
+from the website:
+
+#! /bin/bash
+cat $1 | grep td|
+    tr -d '[:blank:]'| tr -d '\r'|tr '[:upper:]' '[:lower:]'|
+    grep '<td>.*</td>' | sed 's/<[^>]*>//g' | sed 's/,/\n/g'|
+    egrep '^[^bcdfgjqrstwxyz]+$' |  sed "s/\`/\'/g" | sort -u
+
+Then I followed these steps to spellcheck:
+
+1.
+I used the script to create a dictionary of Hawaiian words as follows:
+ cat hwnwdseng.htm | ./buildwords >hwords
+
+2.
+Then, we modify the given command as follows to spellcheck the
+webpage in Hawaiian:
+ tr -cs 'A-Za-z' '[\n*]' <assign2.html | sort -u |
+ tr '[:upper:]' '[:lower:]' | comm -23 - hwords
+
+4.
+By adding >H_misspelled at the end of the previous command,
+we obtain a list of words in the webpage that were 'misspelled'
+in Hawaiian.
+
+5.
+The following command creates a list of words misspelled in English:
+tr -cs 'A-Za-z' '[\n*]' <assign2.html | sort -u |
+tr '[:upper:]' '[:lower:]' | comm -23 - words >E_misspelled
+
+6.
+If we ran this same command on hwords instead of assign2.html,
+since every entry will be matching with the Hawaiian dictionary,
+there will be no output.
+
+7.
+Now we simply have to compare the lists of misspelled words
+using:
+comm -23 E_misspelled H_misspelled 
+and/or
+comm -23 H_misspelled E_misspelled 
+
+in order to get the number of misspelled words in either
+list which did not match with the other misspelled list
+we append | wc -l to the end of the previous command.
+
+These are examples of words found in both lists:
+hword
+hwnwdseng
+wget
+gnu

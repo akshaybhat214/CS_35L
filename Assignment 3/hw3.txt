@@ -1,0 +1,50 @@
+Akshay Bhat
+4/15/2014
+Homework 3
+
+
+1):
+The line is redundant because in the patch, the goto
+loop is removed, so there is no longer a need for this line.
+It was probably removed to ensure that the removed
+method was not accidentally called.
+
+2):
+First of all, for files more than a year old, the new format
+(after applying the patch) does not show the time, since the
+time is replaced by the year. In addition, since the patch
+forces a change of the format regardless of locale, people
+in non-English speaking countries will not be able to
+understand the new date format since it displays english
+months.
+
+3):
+When I ran the command:
+$ python randline.py empty.txt
+the following error output was produced:
+
+turn seq[int(self.random() * len(seq))]
+# raises IndexError if seq is empty
+IndexError: list index out of range
+
+Several exception are thrown by the script because the number
+of lines in the class randlines was 0 and there are multiple
+statements in the code which access lines in the first
+argument. For instance, and IndexError is raised because
+the seq variable is empty.
+Additionally, the statement on line 64 throws an exception
+because it tries to output a randomly chosen line, but there
+are no lines to choose from in the argument with index 1.
+
+4):
+The script randline.py does not work with python3,
+because automatic tuple unpacking was discontinued in
+python3. Therefore, exceptions in Python2 are iterable,
+but exceptions in Python 3 are not,so the following
+exception was thrown: 
+
+File "randline.py", line 65
+  except IOError as (errno, strerror):
+                    ^
+SyntaxError: invalid syntax
+			    

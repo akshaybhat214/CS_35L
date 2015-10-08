@@ -1,0 +1,94 @@
+Exercise 1.1
+2. C-s A S C I I Enter
+
+3. C-s i n s t r u c t i o n s Enter
+
+4. C-s H T M L Enter LEFT LEFT LEFT LEFT
+
+5. C-s h u n t Enter LEFT LEFT LEFT LEFT
+
+6. C-e
+
+7. C-a
+
+8. M-<
+
+9. Did not use arrows.
+
+10. By using the search commands and commands that move the cursor
+to the beginning or end of the line or buffer.
+
+11. C-x C-c
+
+Exercise 1.2
+2. M-g g 1 6 Enter C-k
+
+3. C-s D E L E T E M E Enter C-a C-k
+
+4. C-s H T M L _ c o m m e n t # C o m m e n t s
+Enter C-s C-p C-a C-k C-n C-k C-n C-k
+
+5. C-s < ! - - - - > Enter Backspace Backspace Backspace Backspace
+Backspace Backspace Backspace
+
+Exercise 1.3
+2. M-% A s s i g n m e n t SP 1 Enter A s s i g n m e n t SP 3 5 Enter y y n M-<
+
+3. M-% U T F - 8 Enter U S - A S C I I Enter y n M-<
+
+4. M-< C-s < o l > Enter C-o
+
+5. C-x C-s C-x C-c d i f f SP - u SP e x e r 1 . h t m l SP e x e r 3 . h t m l
+SP > e x e r 2 . d i f f
+
+Exercise 1.4
+
+1. c a t SP e x e r 2 . h t m l SP e x e r 2 . d i f f SP
+> e x e r 4 . h t m l
+
+2. e m a c s SP e x e r 4 . h t m l Enter
+
+3. M-> C-r - <  C-r C-r Enter C-SP C-n C-n LEFT M-w
+   M-x g o t o - l i n e Enter 1 5 Enter C - y M->
+
+4. C-r < ! Enter C-SP C-s - > Enter M-w M-x g o t o
+- l i n e Enter 296 Enter C-e C-r < Enter C-y
+
+C-s - < ! C-s Enter LEFT C-SP C-e M-w M-x g o t o
+- l i n e Enter 9 1 Enter C-y M->
+
+C-r < ! C-r Enter C-SP C-n C-n C-e M-w M-x g o
+t o - l i n e Enter 2 6 0 Enter C-y M-> 
+
+5. C-r - - - SP Enter C-SP M-> C-w
+
+6. C-x u
+
+7. M-> Enter - - > C-s - - - SP Enter Enter C-p
+< ! - - 
+
+8. M-< M-x r e p l a c e - s t r i n g Enter <
+o l > Enter < O l > Enter
+//Replaced 6 occurrences
+
+9. C-x C-s C-x C-c  d i f f SP - u Sp e x e r 1 .
+h t m l SP e x e r 4 . h t m l SP > e x e r 4 .
+d i f f Enter
+
+Exercise 1.5
+
+1. e m a c s Enter C-x d Enter + j u n k Enter Enter
+
+2. M-! touch hello.c Enter g Enter
+//Type out entire program
+C-x b Enter
+
+3. M-x compile Enter Backspace Backspace Backspace
+Backspace Backspace Backspace Backspace Backspace
+g c c SP h e l l o . c SP - o SP h e l l o Enter
+
+4. M-! . / h e l l o > SP hello-out Enter g 
+
+5. M-! c a t SP h e l l o - o u t SP > > SP / u /
+e n g / c l a s s / c l a s s a b h / h w 1 Enter
+Hello, world!

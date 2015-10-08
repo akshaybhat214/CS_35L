@@ -1,0 +1,80 @@
+Akshay Bhat
+Lab 6
+5/5/2015
+Partners- Anirudha Dayal, Panos Karagiannis
+
+1. INITIAL SETUP
+The following commands, grabbed the necessary
+serverside and client SSH tools.
+sudo apt-get update
+sudo apt-get install openssh-server
+sudo apt-get install openssh-client
+
+2.
+CLIENT-SIDE
+
+The following commands were used to connect to a server
+hosted by Anirudha Ajay:
+
+//This creates a private and public SSH keys in the
+// .ssh directory in my home directory.
+$ ssh-keygen
+
+//Check if the server responds, and it is possible to
+//The server did, in fact, connect and the terminal printed
+//multiple lines with round-trip time to send a message.
+$ ping 10.97.85.249
+
+//The following command copies my public key to the server
+//hosted at 10.97.85.249
+$ ssh-copy-id -i anirudh@10.97.85.249
+
+//Initially, tried the command 'eval ssh-agent', but had to
+//include the -s flag with backticks. The command creates
+//an authetication agent that prevents us from having to enter
+//the pasphrase every time we access a private key through SSH.
+$ eval `ssh-agent -s`
+
+//The following command registers the private key with the agent.
+//We never need to enter the passphrase after this. SSH will just
+//verify with the agent.
+$ ssh-add
+
+//Finally, this command allows us to remotely access the user
+//on the remote machine with the specified ip address. The
+// -X flag ensures that X11 forwarding is enabled.
+$ ssh -X anirudh@10.97.85.249
+
+After completing the above process, I typed ifconfig to make
+sure that the IP adress was the same as the host server's.
+(10.97.85.249)
+
+3. SERVER-SIDE
+
+//Created a new user akshay. The 'sudo' term is used because
+// the default user is actually ubuntu on this temporary boot.
+$ sudo useradd -d /home/akshay -m akshay
+
+//Created a password for the recently-created user.
+$ sudo passwd akshay
+
+//Moved to the home directory of the new user.
+$ cd /home/akshay
+
+//Creates a directory .ssh in which we store the IDs
+$ sudo mkdir .ssh
+
+//Changes the ownership of the .ssh folder, so that clients can access it
+$ sudo chown -R akshay .ssh
+
+//Ensures that the directory is writable, so that clients can
+//use ssh-add, and access the folder.
+$ sudo chmod 700 .ssh 
+
+// This gave me the IP address of the server. This is what I gave to Panos
+//and Anirudh, so that they could connect to my server.
+$ ifconfig
+
+//The following command listed all the  processes, and showed that ssh-agent was
+//running, as well as the PID of the ssh-agent:
+$ ps aux | grep ssh 

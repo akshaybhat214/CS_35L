@@ -1,0 +1,93 @@
+Akshay Bhat
+4/30/2015
+Lab 5 CS35L
+
+1.
+In order to build the buggy version of coreutils:
+$ wget http://cs.ucla.edu/classes/spring15/cs35L/assign/coreutils-with-bug.tar.gz
+$ tar -xvf coreutils-with-bug.tar.gz
+$ ./configure
+$ make
+
+Originally, when building coreutils, entering the command
+'$ make' would always result in an error because of errors
+in the source file utimens.c and utimens.h, specifically
+in the function futimens. Aplying the patch made changes to
+fixed source files, as well as the files tee.c and touch.c.
+After applying the patch, make and make install did not
+output any errors.
+
+2.
+In order to reproduce the bug, I used the following commands
+after entering a temporary directory:
+
+$ tmp=$(mktemp -d)
+$ cd $tmp
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ sleep 1
+$ touch now1
+$ TZ=UTC0 ls -lt --full-time wwi-armistice now now1
+
+Which produced the following output (clearly, the bug was recreated
+since the wwi file was shown as the most recent):
+-rw-r--r-- 1 classabh class 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 classabh class 0 2015-04-30 20:09:33.699041650 +0000 now1
+-rw-r--r-- 1 classabh class 0 2015-04-30 20:09:24.748699797 +0000 now
+
+Now to find the bug, I traced through the source code for ls.c and looked
+for functions that made calculations based on time. The function cmp_mtime was
+called repeatedly, so I set it as a breakpointon gdb as below:
+
+TZ=UTC0 gdb --args ~/lab5/coreutilsStore/coreutils-fixed/src/ls -lt --full-time
+(gdb)break cmp_mtime
+(gdb) run
+(gdb) continue
+
+It was called times (for comparisons between the 3 files),
+so I investigated further.
+
+After reaching the breakpoint again, I used
+(gdb) stepi and the next lines outputted by gdb were:
+
+timespec_cmp (b=..., a=...) at ../lib/timespec.h:49
+49        return diff ? diff : a.tv_nsec - b.tv_nsec;
+
+Clearly, the function timespec_cmp, on line 49 in the timespce.h file
+were causing these errors. Upon finding the file and looking at the code,
+at became evident that the error was being caused because it was subtracting
+b.tv_nsec, and in this case, that was a large negative value since the wwi_armstice
+file was touched before 1970. Therefore, the program was adding the magnitude
+of b.tv_nsec to a.tv_nsec, and the output was greater than an integer could
+hold (integers can only hold numbers up to 2^31-1 ).
+The fix was simple, and just required casting to long and carrying out necessary
+comparison calculations.
+Longs can hold far larger numbers, so this error was fixed.
+
+I created a duplicate directory, made the changes and then used the following
+command to generate the patch:
+
+$diff -u coreutils-with-bug/lib/timespec.h coreutils-fixed/lib/timespec.h > ../../lab5.diff
+
+Please see lab5.diff for the patch.
+
+3.
+When I tried to recreate the problem in my home directory on SEASnet,
+I typed all the commands from part 2 of this report, but excluded the
+commands creating the temporary directory. I found that the a different
+result was found using the installed version of ls, becuase the
+following output was produced:
+
+-rw-r--r-- 1 classabh class 0 2054-12-17 17:28:16.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 classabh class 0 2015-05-01 01:04:31.948762000 +0000 now1
+-rw-r--r-- 1 classabh class 0 2015-05-01 01:04:22.048010000 +0000 now
+
+The timestamp for wwi-armstice showed that it was created in the
+year 2054, which is clearly wrong. The error is created because of
+inconsistencies between the NFS file system in the directories, and
+the SEASnet servers. NFS uses signed timestamps,
+and the server uses unsigned timestamps,so it calculates that
+the time elapsed since the file was created is a really huge positive number,
+rather than a large negative number. After adding this value to the
+number of seconds since January 1st, 1970, the resulatant date turns out
+to be December 12th, 2054, as reflected by the first line of output above.

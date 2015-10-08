@@ -1,0 +1,98 @@
+1. man -K "str" where str is whatever string we want to search for in
+the man pages.
+man man shows us the manual for man, and then we can see that
+-K searched through manual pages for the string.
+
+2./usr/local/cs/bin/cp
+  /usr/local/cs/bin/wc
+  Found using: $ which cp and $ which wc
+  
+3. Some executables which are one character long are '[', 'w' and 'X'
+w shows who is logged on and their processes,
+and X is network-transparent windows system.
+It was found by searching for executables one character long,
+and selecting those which belonged to a directory ending in /bin.
+
+4. gcc is executed
+this was found using the command $readlink /usr/bin/cc
+   
+5.The group permissions bit cannot be altered in absolute mode
+so it must be set in symbolic mode. g-s sets the bits in symbolic mode.
+This was found by searching the man page of chmod.
+$man chmod followed by
+/g-s
+
+6. the option is -mtime.
+the full command is '$ find -mtime -3'.
+
+7.Use the command '$find -mtime -3 -type d'.
+chmod's man page tells us that we can find directories using -type d.
+
+8. There are 18 files which are symbolic links in the same directory as find.
+This was found using the following commands:
+'$ which find' to find the directory holding find
+after changing directory to the previously found directory,
+'$ find -type l | wc -l' to get the number of files which are symbolic links.
+
+9. the oldest regular file is libsqlite.so.0.8.6
+It is found using the commmand 'ls -l -t | tail --line 1'
+This lists them in order of age, and then outputs the last file.
+
+10. /usr/bin/locale
+This directory was found using 'which locale'
+
+11. Buffer-menu-sort
+    sort-columns
+    sort-fields
+    sort-lines
+    sort-numeric-fields
+    sort-pages
+    sort-paragraphs
+    sort-regexp-fields
+    tabulated-list-col-sort
+    tabulated-list-sort
+These commands were found by opening Emacs and typing C-h a sort <RET>.
+
+12.
+C-a      	move-beginning-of-line
+C-b 	        backward-char
+C-c	       	mode-specific-command-prefix
+C-d		delete-char
+C-e		move-end-of-line
+C-f		forward-char
+C-g		keyboard-quit
+C-h		help-command
+C-j		electric-newline-and-maybe-indent
+C-k		kill-line
+C-l		recenter-top-bottom
+C-n		next-line
+C-o		open-line
+C-p		previous-line
+C-q		quoted-insert
+C-r		isearch-backward
+C-s		isearch-forward
+C-t		transpose-chars
+C-u		universal-argument
+C-v		scroll-up-command
+C-w		kill-region
+C-x		Control-X-prefix
+C-y		yank
+C-z		suspend-frame
+
+These were found by first using the command '$ emacs'.
+Then entering the manual using 'C-h b'.
+This will show all bindings.
+
+13. C-g is the quit command and will kill any commands currently
+running in emacs.
+
+14.Yanking is inserting text which was previously killed.
+To copy-paste text, we first kill it and then yank it.
+This was found by goinng into emacs and entering the manual
+using 'C-h b' and the entering the directory called "Killing".
+
+15.The difference is that while using the emacs dired command,
+you can directly modify files by placing the cursor on the file.
+If we use the ls -l command,it only lists the files,
+but we still need to write seperate commands for each file
+we want to modify/remove.
